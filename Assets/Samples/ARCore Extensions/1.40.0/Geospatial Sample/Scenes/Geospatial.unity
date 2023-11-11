@@ -4016,7 +4016,7 @@ MonoBehaviour:
   SessionOrigin: {fileID: 691323908}
   CameraManager: {fileID: 1451910693}
   ARCoreExtensionsConfig: {fileID: 11400000, guid: c109cc0d42e3648dca906c2cccaaa763, type: 2}
-  CameraConfigFilter: {fileID: 0}
+  CameraConfigFilter: {fileID: 11400000, guid: 7b99aa3ca20ecd0459d0be5dc16f6d26, type: 2}
 --- !u!4 &1476232296
 Transform:
   m_ObjectHideFlags: 0

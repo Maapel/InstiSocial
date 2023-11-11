@@ -37,7 +37,7 @@ public class ScheduleHandle : MonoBehaviour
     public GameObject eventInfoPrefab;
     List<double[]> locations = new List<double[]>();
     List<GameObject> anchors = new List<GameObject>();
-    [SerializeField]private ARAnchorManager _anchorManager;
+    [SerializeField]private GameObject _ARSessionOrigin;
 
     // Start is called before the first frame update
     async void  Start()
@@ -74,7 +74,7 @@ public class ScheduleHandle : MonoBehaviour
                 var longitude = location[1];
                 anchorController.Latitude = latitude;
                 anchorController.Longitude = longitude;
-                anchorController._anchorManager = _anchorManager;
+                anchorController._ARSessionOrigin = _ARSessionOrigin;
             }
             int ind = locations.FindIndex(elem => elem.SequenceEqual(location));
 

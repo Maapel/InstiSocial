@@ -4,7 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
-
+using Google.XR.ARCoreExtensions.Internal;
+using UnityEngine.XR.ARSubsystems;
 
 public class AnchorController : MonoBehaviour
 {
@@ -12,9 +13,9 @@ public class AnchorController : MonoBehaviour
 
     /// <summary>Gets or sets the longitude of this anchor.</summary>
     public double Longitude;
-    public ARAnchorManager _anchorManager = null;
-
-    private ARGeospatialAnchor anchor;
+    public GameObject _ARSessionOrigin ;
+    private ARAnchorManager _anchorManager=null;
+    //private ARGeospatialAnchor anchor;
    
     private AnchorResolutionState _anchorResolution = AnchorResolutionState.NotStarted;
     private enum AnchorResolutionState
@@ -26,7 +27,7 @@ public class AnchorController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _anchorManager = _ARSessionOrigin.GetComponent<ARAnchorManager>();   
     }
     public void arrange()
     {
@@ -43,8 +44,19 @@ public class AnchorController : MonoBehaviour
     }
     private void AddGeoAnchorAtRuntime()
     {
-
         
+
+        // During boot this will return false a few times.
+        
+
+        // Geospatial anchors cannot be created until the AR Session is stable and tracking:
+        // https://developers.google.com/ar/develop/unity-arf/geospatial/geospatial-anchors#place_a_geospatial_anchor_in_the_real_world
+        if (_ARSessionOrigin.GetComponent<AREarthManager>().EarthTrackingState != TrackingState.Tracking)
+        {
+            Debug.Log("Waiting for AR Session to become stable.");
+            return;
+        }
+
 
         if (_anchorManager == null)
         {
@@ -74,7 +86,7 @@ public class AnchorController : MonoBehaviour
         // anchor will handle that from now on.
         transform.position = new Vector3(0, 0, 0);
         transform.rotation = Quaternion.identity;
-        transform.SetParent(resolvedAnchor.transform, false);
+        transform.SetParent(resolvedAnchor.transform,false);
 
         _anchorResolution = AnchorResolutionState.Complete;
         Debug.Log("Geospatial Anchor resolved: " + name);
@@ -82,7 +94,7 @@ public class AnchorController : MonoBehaviour
     private IEnumerator ResolveTerrainAnchor()
     {
        
-        double altitudeAboveTerrain = 10;
+        double altitudeAboveTerrain = 2;
         ARGeospatialAnchor anchor = null;
         ResolveAnchorOnTerrainPromise promise =
             _anchorManager.ResolveAnchorOnTerrainAsync(
