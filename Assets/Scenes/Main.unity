@@ -129,7 +129,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2041229623}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: m_LocalPosition.x
@@ -196,11 +196,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
---- !u!4 &161912259 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
-  m_PrefabInstance: {fileID: 161912258}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &180088848
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -774,6 +769,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2041229623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1597150169
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1597150171}
+  - component: {fileID: 1597150170}
+  m_Layer: 0
+  m_Name: AR Geospatial Creator Origin
+  m_TagString: EditorOnly
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1597150170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597150169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75a955f18f200b34ba07d82013cdd0f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1597150171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1597150169}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1708610812
 GameObject:
   m_ObjectHideFlags: 0
@@ -867,7 +906,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728ad7fae8e460a4ba41265c7308d757, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AnchorPrefab: {fileID: 0}
+  m_AnchorPrefab: {fileID: 3125165527598978782, guid: 779f5eab1277241d6b58ee2c44909b20, type: 3}
 --- !u!114 &2041229622
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -899,7 +938,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1091194025}
-  - {fileID: 161912259}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2041229624
@@ -925,3 +963,5 @@ SceneRoots:
   - {fileID: 414153868}
   - {fileID: 180088848}
   - {fileID: 1708610814}
+  - {fileID: 1597150171}
+  - {fileID: 161912258}

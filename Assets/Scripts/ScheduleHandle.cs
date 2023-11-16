@@ -79,6 +79,7 @@ public class ScheduleHandle : MonoBehaviour
             int ind = locations.FindIndex(elem => elem.SequenceEqual(location));
 
             obj = GameObject.Instantiate(eventInfoPrefab, anchors[ind].transform);
+            obj.transform.localPosition = new Vector3(0,0,0);
             obj.GetComponent<EventController>().setParams(e);
             anchors[ind].GetComponent<AnchorController>().arrange();
 

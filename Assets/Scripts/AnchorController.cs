@@ -32,7 +32,7 @@ public class AnchorController : MonoBehaviour
     public void arrange()
     {
         int index = this.transform.childCount - 1;
-        this.transform.GetChild(index).localPosition = new Vector3 (0,index*1.2f,0);
+        this.transform.GetChild(index).localPosition = new Vector3 (0,index*1.2f * this.transform.GetChild(index).localScale.y, 0);
     }
     // Update is called once per frame
     void Update()
@@ -41,6 +41,10 @@ public class AnchorController : MonoBehaviour
         {
             AddGeoAnchorAtRuntime();
         }
+        Debug.Log(transform.position.ToString());
+        Debug.Log(Camera.main.transform.position.ToString());
+
+
     }
     private void AddGeoAnchorAtRuntime()
     {
@@ -84,10 +88,12 @@ public class AnchorController : MonoBehaviour
         // ARGeospatialAnchor by making the creator anchor a child of the runtime anchor.
         // We zero out the pose & rotation on the creator anchor, since the runtime
         // anchor will handle that from now on.
-        transform.position = new Vector3(0, 0, 0);
+        
         transform.rotation = Quaternion.identity;
-        transform.SetParent(resolvedAnchor.transform,false);
 
+        transform.parent = resolvedAnchor.gameObject.transform;
+        transform.localPosition= new Vector3(0, 0, 0);
+        transform.LookAt(new Vector3(Camera.main.transform.position.x, transform.position.y,Camera.main.transform.position.z));
         _anchorResolution = AnchorResolutionState.Complete;
         Debug.Log("Geospatial Anchor resolved: " + name);
     }
@@ -102,9 +108,11 @@ public class AnchorController : MonoBehaviour
 
         yield return promise;
         var result = promise.Result;
+        
         if (result.TerrainAnchorState == TerrainAnchorState.Success)
         {
             anchor = result.Anchor;
+            
         }
 
         FinishAnchor(anchor);
