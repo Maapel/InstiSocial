@@ -129,19 +129,19 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 2041229623}
     m_Modifications:
     - target: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -94.73582
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -66.233536
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -661.85986
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: m_LocalRotation.w
@@ -186,7 +186,7 @@ PrefabInstance:
     - target: {fileID: 9165487803030370300, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: eventInfoPrefab
       value: 
-      objectReference: {fileID: 4635139639468464283, guid: c5b7a7fd83d6f0b4ba57bd3fec968ac8, type: 3}
+      objectReference: {fileID: 4635139639468464283, guid: d31813af9dee61a489c03e5057e4d68d, type: 3}
     - target: {fileID: 9165487803030370300, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
       propertyPath: _ARSessionOrigin
       value: 
@@ -769,6 +769,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2041229623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1597150171 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3097383967673542510, guid: c37763c6693a04d46aabb8eb80a14c68, type: 3}
+  m_PrefabInstance: {fileID: 161912258}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1708610812
 GameObject:
   m_ObjectHideFlags: 0
@@ -831,6 +836,7 @@ GameObject:
   - component: {fileID: 2041229621}
   - component: {fileID: 2041229620}
   - component: {fileID: 2041229624}
+  - component: {fileID: 2041229625}
   m_Layer: 0
   m_Name: AR Session Origin
   m_TagString: Untagged
@@ -879,7 +885,7 @@ MonoBehaviour:
   m_OriginBaseGameObject: {fileID: 2041229619}
   m_CameraFloorOffsetObject: {fileID: 0}
   m_RequestedTrackingOriginMode: 0
-  m_CameraYOffset: 1.1176
+  m_CameraYOffset: 0
 --- !u!4 &2041229623
 Transform:
   m_ObjectHideFlags: 0
@@ -894,6 +900,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1091194025}
+  - {fileID: 1597150171}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2041229624
@@ -910,6 +917,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PlanePrefab: {fileID: 0}
   m_DetectionMode: -1
+--- !u!114 &2041229625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041229619}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8327b807ca7a4c87b3b7afa5a2cb0b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  AnchorPrefab: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -919,4 +939,3 @@ SceneRoots:
   - {fileID: 414153868}
   - {fileID: 180088848}
   - {fileID: 1708610814}
-  - {fileID: 161912258}

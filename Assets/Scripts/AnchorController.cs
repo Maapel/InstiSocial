@@ -39,8 +39,9 @@ public class AnchorController : MonoBehaviour
     void Update()
     {
         TrackingState trackingState = _ARSessionOrigin.GetComponent<AREarthManager>().EarthTrackingState;
-        if (_anchorResolution == AnchorResolutionState.NotStarted)
+        if ((_anchorResolution == AnchorResolutionState.NotStarted) & Time.timeSinceLevelLoad>4)
         {
+            
             AddGeoAnchorAtRuntime();
             
 
@@ -57,15 +58,16 @@ public class AnchorController : MonoBehaviour
                 transform.GetChild(0).gameObject.SetActive(Vector3.Distance(Camera.main.transform.position,transform.position)<=20);
 
             }
+            Debug.Log("Tracking State :  " + trackingState.ToString());
+            Debug.Log("Anchor Tracking State :  " + rGeospatialAnchor.trackingState.ToString());
+            Debug.Log("Anchor Prefab Position : " + transform.position.ToString());
+            //Debug.Log("Venue Position : " + transform.GetChild(0).position.ToString());
+            //Debug.Log("Event Position : " + transform.GetChild(0).GetChild(0).position.ToString());
+            Debug.Log("Resolved Anchor Position : " + rGeospatialAnchor.transform.position.ToString());
+            Debug.Log("Camera Position : " + Camera.main.transform.position.ToString());
+            Debug.Log("  ");
         }
-        Debug.Log("Tracking State :  "+ trackingState.ToString());
-        Debug.Log("Anchor Tracking State :  " + rGeospatialAnchor.trackingState.ToString() );
-        Debug.Log("Anchor Prefab Position : " + transform.position.ToString());
-        //Debug.Log("Venue Position : " + transform.GetChild(0).position.ToString());
-        //Debug.Log("Event Position : " + transform.GetChild(0).GetChild(0).position.ToString());
-        Debug.Log("Resolved Anchor Position : " + transform.parent.position.ToString());
-        Debug.Log("Camera Position : "  +Camera.main.transform.position.ToString());
-        Debug.Log("  ");
+        
 
     }
     private void AddGeoAnchorAtRuntime()
@@ -117,6 +119,7 @@ public class AnchorController : MonoBehaviour
         _anchorResolution = AnchorResolutionState.Complete;
         Debug.Log("Geospatial Anchor resolved: " + name+ "  "+ resolvedAnchor.trackingState.ToString());
     }
+   
     private IEnumerator ResolveTerrainAnchor()
     {
        
@@ -128,13 +131,15 @@ public class AnchorController : MonoBehaviour
         var result = promise.Result;
         
         
-        if (result.TerrainAnchorState == TerrainAnchorState.Success)
+        if (result.TerrainAnchorState == TerrainAnchorState.Success &&
+               result.Anchor != null)
         {
             anchor = result.Anchor;
             
         }
+        
 
-        FinishAnchor(anchor);
+            FinishAnchor(anchor);
         yield break;
     }
     

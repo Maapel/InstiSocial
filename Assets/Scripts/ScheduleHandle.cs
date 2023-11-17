@@ -10,6 +10,7 @@ using Google.XR.ARCoreExtensions.GeospatialCreator.Internal;
 using Google.XR.ARCoreExtensions;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using Google.XR.ARCoreExtensions.Samples.Geospatial;
 
 [Serializable]
 public class Event
@@ -38,12 +39,23 @@ public class ScheduleHandle : MonoBehaviour
     List<double[]> locations = new List<double[]>();
     List<GameObject> anchors = new List<GameObject>();
     [SerializeField]private GameObject _ARSessionOrigin;
-    private bool _isLocalizing;
+    private bool _isLocalizing=true;
     private float _localizationPassedTime;
     private AREarthManager EarthManager;
-    private double _orientationYawAccuracyThreshold;
-    private double _horizontalAccuracyThreshold;
-    private float _timeoutSeconds;
+
+    private float _timeoutSeconds = 180;
+    private const double _orientationYawAccuracyThreshold = 25;
+
+    /// <summary>
+    /// Accuracy threshold for heading degree that can be treated as localization completed.
+    /// </summary>
+   
+
+    /// <summary>
+    /// Accuracy threshold for altitude and longitude that can be treated as localization
+    /// completed.
+    /// </summary>
+    private const double _horizontalAccuracyThreshold = 20;
 
     private void Awake()
     {
@@ -151,8 +163,10 @@ public class ScheduleHandle : MonoBehaviour
 
     }
 
-    
 
+  
+
+        
     // Update is called once per frame
 
 }
