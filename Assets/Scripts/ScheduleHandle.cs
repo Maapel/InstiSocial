@@ -33,12 +33,22 @@ public class ScheduleHandle : MonoBehaviour
     private GameObject obj;
 
     private static readonly HttpClient client = new HttpClient();
-    private List<EventInfo> eventInfos = new List<EventInfo>();
+    //private List<EventInfo> eventInfos = new List<EventInfo>();
     public GameObject eventInfoPrefab;
     List<double[]> locations = new List<double[]>();
     List<GameObject> anchors = new List<GameObject>();
     [SerializeField]private GameObject _ARSessionOrigin;
+    private bool _isLocalizing;
+    private float _localizationPassedTime;
+    private AREarthManager EarthManager;
+    private double _orientationYawAccuracyThreshold;
+    private double _horizontalAccuracyThreshold;
+    private float _timeoutSeconds;
 
+    private void Awake()
+    {
+        EarthManager = _ARSessionOrigin.GetComponent<AREarthManager>(); 
+    }
     // Start is called before the first frame update
     async void  Start()
     {   
@@ -64,7 +74,7 @@ public class ScheduleHandle : MonoBehaviour
             if (!locations.Any(elem => elem.SequenceEqual(location)))
             {
                 locations.Add(location);
-                obj = GameObject.Instantiate(anchor_obj, this.transform);
+                obj = GameObject.Instantiate(anchor_obj);
 
                 anchors.Add(obj);
                 AnchorController anchorController = obj.GetComponent<AnchorController>();
@@ -90,12 +100,54 @@ public class ScheduleHandle : MonoBehaviour
     
     private void Update()
     {
-        
-     
-        
-        
+        bool isSessionReady = ARSession.state == ARSessionState.SessionTracking &&
+               Input.location.status == LocationServiceStatus.Running;
+        var earthTrackingState = EarthManager.EarthTrackingState;
+        var pose = earthTrackingState == TrackingState.Tracking ?
+            EarthManager.CameraGeospatialPose : new GeospatialPose();
+        if (!isSessionReady || earthTrackingState != TrackingState.Tracking ||
+            pose.OrientationYawAccuracy > _orientationYawAccuracyThreshold ||
+            pose.HorizontalAccuracy > _horizontalAccuracyThreshold)
+        {
+            // Lost localization during the session.
+            if (!_isLocalizing)
+            {
+                _isLocalizing = true;
+                _localizationPassedTime = 0f;
+                foreach (var go in anchors)
+                {
+                    go.SetActive(false);
+                }
+            }
+
+            if (_localizationPassedTime > _timeoutSeconds)
+            {
+                Debug.LogError("Geospatial sample localization timed out.");
+                
+            }
+            else
+            {
+                _localizationPassedTime += Time.deltaTime;
+                
+            }
+        }
+        else if (_isLocalizing)
+        {
+            // Finished localization.
+            _isLocalizing = false;
+            _localizationPassedTime = 0f;
+            foreach (var go in anchors)
+            {
+                go.SetActive(true);
+            }
+
+            
+        }
+
+
+
         // Your code came here
-        
+
 
     }
 

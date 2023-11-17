@@ -15,6 +15,7 @@ public class AnchorController : MonoBehaviour
     public double Longitude;
     public GameObject _ARSessionOrigin ;
     private ARAnchorManager _anchorManager=null;
+    private ARGeospatialAnchor rGeospatialAnchor=null;
     //private ARGeospatialAnchor anchor;
    
     private AnchorResolutionState _anchorResolution = AnchorResolutionState.NotStarted;
@@ -37,13 +38,34 @@ public class AnchorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TrackingState trackingState = _ARSessionOrigin.GetComponent<AREarthManager>().EarthTrackingState;
         if (_anchorResolution == AnchorResolutionState.NotStarted)
         {
             AddGeoAnchorAtRuntime();
-        }
-        Debug.Log(transform.position.ToString());
-        Debug.Log(Camera.main.transform.position.ToString());
+            
 
+        }
+        if (rGeospatialAnchor != null)
+        {
+            if (!rGeospatialAnchor.trackingState.Equals(TrackingState.Tracking))
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+            }
+            else
+            {
+               
+                transform.GetChild(0).gameObject.SetActive(Vector3.Distance(Camera.main.transform.position,transform.position)<=20);
+
+            }
+        }
+        Debug.Log("Tracking State :  "+ trackingState.ToString());
+        Debug.Log("Anchor Tracking State :  " + rGeospatialAnchor.trackingState.ToString() );
+        Debug.Log("Anchor Prefab Position : " + transform.position.ToString());
+        //Debug.Log("Venue Position : " + transform.GetChild(0).position.ToString());
+        //Debug.Log("Event Position : " + transform.GetChild(0).GetChild(0).position.ToString());
+        Debug.Log("Resolved Anchor Position : " + transform.parent.position.ToString());
+        Debug.Log("Camera Position : "  +Camera.main.transform.position.ToString());
+        Debug.Log("  ");
 
     }
     private void AddGeoAnchorAtRuntime()
@@ -62,12 +84,10 @@ public class AnchorController : MonoBehaviour
         }
 
 
-        if (_anchorManager == null)
+        if (_anchorManager == null)  
         {
-            string errorReason =
-                "The Session Origin's AnchorManager is null.";
-            Debug.LogError("Unable to place ARGeospatialCreatorAnchor " + name + ": " +
-                errorReason);
+            string errorReason = "The Session Origin's AnchorManager is null.";
+            Debug.LogError("Unable to place ARGeospatialCreatorAnchor " + name + ": " + errorReason);
             _anchorResolution = AnchorResolutionState.Complete;
             return;
         }
@@ -88,26 +108,25 @@ public class AnchorController : MonoBehaviour
         // ARGeospatialAnchor by making the creator anchor a child of the runtime anchor.
         // We zero out the pose & rotation on the creator anchor, since the runtime
         // anchor will handle that from now on.
-        
+        rGeospatialAnchor = resolvedAnchor;
         transform.rotation = Quaternion.identity;
-
+       
         transform.parent = resolvedAnchor.gameObject.transform;
         transform.localPosition= new Vector3(0, 0, 0);
-        transform.LookAt(new Vector3(Camera.main.transform.position.x, transform.position.y,Camera.main.transform.position.z));
+        transform.LookAt(new Vector3(-Camera.main.transform.position.x, transform.position.y,-Camera.main.transform.position.z));
         _anchorResolution = AnchorResolutionState.Complete;
-        Debug.Log("Geospatial Anchor resolved: " + name);
+        Debug.Log("Geospatial Anchor resolved: " + name+ "  "+ resolvedAnchor.trackingState.ToString());
     }
     private IEnumerator ResolveTerrainAnchor()
     {
        
-        double altitudeAboveTerrain = 2;
+        double altitudeAboveTerrain = 0;
         ARGeospatialAnchor anchor = null;
-        ResolveAnchorOnTerrainPromise promise =
-            _anchorManager.ResolveAnchorOnTerrainAsync(
-                Latitude, Longitude, altitudeAboveTerrain, transform.rotation);
-
+        ResolveAnchorOnTerrainPromise promise =_anchorManager.ResolveAnchorOnTerrainAsync( Latitude, Longitude, altitudeAboveTerrain, transform.rotation);
         yield return promise;
+
         var result = promise.Result;
+        
         
         if (result.TerrainAnchorState == TerrainAnchorState.Success)
         {
