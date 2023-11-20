@@ -5,7 +5,7 @@ In the vibrant tapestry of college fests and meets, navigating through numerous 
 
 ## Usage
 
-1] Download the InstiSocial.apk from repository \
+1] Download the [InstiSocial.apk](https://drive.google.com/file/d/1Tg_WU6_3w4ILVmKV2VXkJAqQqR6jZ8e6/view?usp=sharing)from repository \
 2] Add events in the webapp: https://maadhav17.pythonanywhere.com/add_event \
 3] Try out the app , go to the location of the event and you should be able to see the event schedule , and interact with it.
 
