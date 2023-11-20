@@ -67,8 +67,6 @@ public class ScheduleHandle : MonoBehaviour
         //Debug.Log(events.eventList);
         //EventInfo eventInfo = new EventInfo(infos, eventInfoPrefab,this.transform,anchor_obj);
 
-        int i = 0;
-
         foreach (Event e in events)
         {
 
@@ -94,23 +92,28 @@ public class ScheduleHandle : MonoBehaviour
             var upper_lim = DateTime.Parse(e.event_date +" "+ e.event_time_end);
 
             if ( (DateTime.Now >= lower_lim ) &&(DateTime.Now <  upper_lim )){
-                obj = GameObject.Instantiate(currentEventPrefab, anchors[ind].transform);
-                
+                obj = GameObject.Instantiate(currentEventPrefab, anchors[ind].transform.GetChild(0));
+                obj.transform.localPosition = new Vector3(0, 0, 0);
             }
-            else if (DateTime.Now >= upper_lim)
+            else if (DateTime.Now < lower_lim)
             {
-                obj = GameObject.Instantiate(eventInfoPrefab, anchors[ind].transform.GetChild(1));
+                obj = GameObject.Instantiate(eventInfoPrefab, anchors[ind].transform.GetChild(0).GetChild(1));
+                anchors[ind].GetComponent<AnchorController>().arrange();
+                Debug.Log("Arrange");
             }
             else
             {
                 continue;
             }
-            obj.transform.localPosition = new Vector3(0, 0, 0);
+            
+            
             obj.GetComponent<EventController>().setParams(e);
-            anchors[ind].GetComponent<AnchorController>().arrange();
+            
 
 
         }
+        foreach( var anchor in anchors) { anchor.transform.GetChild(0).GetChild(1).gameObject.SetActive(false); }
+        
     }
 
 
@@ -135,16 +138,21 @@ public class ScheduleHandle : MonoBehaviour
                 {
                     // Raycast hits are sorted by distance, so the first one will be the closest hit.
                     
-                    Debug.Log("HIT");
-                    Debug.Log(raycastHit.transform.name);
+                    //Debug.Log("HIT");
+                    //Debug.Log(raycastHit.transform.name);
                     
                     if (raycastHit.transform.name.Equals("More"))
                     {
-                        var anchorObj = raycastHit.transform.parent;
-                        anchorObj.GetChild(1).gameObject.SetActive(!anchorObj.GetChild(1).gameObject.activeSelf);
-                        if (anchorObj.childCount > 2)
+                        var anchorDisp = raycastHit.transform.parent;
+                        var menuOpen = !anchorDisp.GetChild(1).gameObject.activeSelf;
+                        anchorDisp.GetChild(1).gameObject.SetActive(menuOpen);
+                        anchorDisp.GetChild(0).GetChild(2).gameObject.SetActive(menuOpen);
+                        anchorDisp.GetChild(0).GetChild(1).gameObject.SetActive(!menuOpen);
+
+
+                        if (anchorDisp.childCount > 2)
                         {
-                            anchorObj.GetChild(2).gameObject.SetActive(!anchorObj.GetChild(2).gameObject.activeSelf);
+                            anchorDisp.GetChild(2).gameObject.SetActive(!menuOpen);
 
                         }
                     }
@@ -159,6 +167,24 @@ public class ScheduleHandle : MonoBehaviour
         var earthTrackingState = EarthManager.EarthTrackingState;
         var pose = earthTrackingState == TrackingState.Tracking ?
             EarthManager.CameraGeospatialPose : new GeospatialPose();
+       /*Debug.Log(string.Format(
+                "Latitude/Longitude: {1}°, {2}°{0}" +
+                "Horizontal Accuracy: {3}m{0}" +
+                "Altitude: {4}m{0}" +
+                "Vertical Accuracy: {5}m{0}" +
+                "Eun Rotation: {6}{0}" +
+                "Orientation Yaw Accuracy: {7}°",
+                Environment.NewLine,
+                pose.Latitude.ToString("F6"),
+                pose.Longitude.ToString("F6"),
+                pose.HorizontalAccuracy.ToString("F6"),
+                pose.Altitude.ToString("F2"),
+                pose.VerticalAccuracy.ToString("F2"),
+                pose.EunRotation.ToString("F1"),
+                pose.OrientationYawAccuracy.ToString("F1")));*/
+       
+          
+
         if (!isSessionReady || earthTrackingState != TrackingState.Tracking ||
             pose.OrientationYawAccuracy > _orientationYawAccuracyThreshold ||
             pose.HorizontalAccuracy > _horizontalAccuracyThreshold)

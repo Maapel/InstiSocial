@@ -32,9 +32,15 @@ public class AnchorController : MonoBehaviour
     }
     public void arrange()
     {
-        int index = this.transform.GetChild(1).childCount - 1;
+        transform.GetChild(0).gameObject.SetActive(true);
+        
+        int index = transform.GetChild(0).GetChild(1).childCount - 1;
+        Debug.Log(index);
+        
+        transform.GetChild(0).GetChild(1).GetChild(index).localPosition = new Vector3 (0,index*3.8f* transform.GetChild(0).GetChild(1).GetChild(index).localScale.y, 0);
+        
+        
 
-        this.transform.GetChild(1).GetChild(index).localPosition = new Vector3 (0,index*4 * this.transform.GetChild(index).localScale.y, 0);
     }
     // Update is called once per frame
     void Update()
@@ -56,17 +62,17 @@ public class AnchorController : MonoBehaviour
             else
             {
                
-                transform.GetChild(0).gameObject.SetActive(Vector3.Distance(new Vector3(Camera.main.transform.position.x , 0 , Camera.main.transform.position.z),new Vector3(transform.position.x , 0 , transform.position.z))<=15);
+                transform.GetChild(0).gameObject.SetActive(Vector3.Distance(new Vector3(Camera.main.transform.position.x , 0 , Camera.main.transform.position.z),new Vector3(transform.position.x , 0 , transform.position.z))<=11);
 
             }
-            Debug.Log("Tracking State :  " + trackingState.ToString());
+            /*Debug.Log("Tracking State :  " + trackingState.ToString());
             Debug.Log("Anchor Tracking State :  " + rGeospatialAnchor.trackingState.ToString());
             Debug.Log("Anchor Prefab Position : " + transform.position.ToString());
             //Debug.Log("Venue Position : " + transform.GetChild(0).position.ToString());
             //Debug.Log("Event Position : " + transform.GetChild(0).GetChild(0).position.ToString());
             Debug.Log("Resolved Anchor Position : " + rGeospatialAnchor.transform.position.ToString());
             Debug.Log("Camera Position : " + Camera.main.transform.position.ToString());
-            Debug.Log("  ");
+            Debug.Log("  ");*/
         }
         
 
@@ -118,7 +124,7 @@ public class AnchorController : MonoBehaviour
         transform.localPosition= new Vector3(0, 0, 0);
         transform.LookAt(new Vector3(-Camera.main.transform.position.x, transform.position.y,-Camera.main.transform.position.z));
         _anchorResolution = AnchorResolutionState.Complete;
-        Debug.Log("Geospatial Anchor resolved: " + name+ "  "+ resolvedAnchor.trackingState.ToString());
+        //Debug.Log("Geospatial Anchor resolved: " + name+ "  "+ resolvedAnchor.trackingState.ToString());
     }
    
     private IEnumerator ResolveTerrainAnchor()

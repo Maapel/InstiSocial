@@ -31,7 +31,7 @@ public class ScheduleHandleTest : MonoBehaviour
     // Start is called before the first frame update
     async void  Start()
     {
-        Debug.Log(DateTime.Parse("03-01-2023 19:00"));
+        Debug.Log(DateTime.Parse("21-11-2023 00:00"));
         string directions_link = "https://dev.virtualearth.net/REST/V1/Routes/Walking?wp.0=12.990065205335194,80.23224717894841&wp.1=12.985991040520409,80.233811067139982&key=AoN0J8xMFNrX9FcL0go-l9QfWRL6sbOYoJ0dK4gErp46Fx3XtovdnXgxiM6eYs4e";
         var responseString = await client.GetStringAsync("https://maadhav17.pythonanywhere.com/get_events");
 
