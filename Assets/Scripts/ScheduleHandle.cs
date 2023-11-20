@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 
 using UnityEngine;
 using System.Net.Http;
@@ -10,7 +8,6 @@ using Google.XR.ARCoreExtensions.GeospatialCreator.Internal;
 using Google.XR.ARCoreExtensions;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
-using Google.XR.ARCoreExtensions.Samples.Geospatial;
 
 [Serializable]
 public class Event
@@ -18,18 +15,21 @@ public class Event
     public int id;
     public string event_date;
     public string event_name;
+    public string event_details;
+
     public string event_time;
+    public string event_time_end;
     public string event_venue;
-    
+
     public string latitude;
     public string longitude;
 }
 
 public class ScheduleHandle : MonoBehaviour
 
-{   
-   
-    
+{
+
+
     public GameObject anchor_obj;
     private GameObject obj;
 
@@ -38,46 +38,37 @@ public class ScheduleHandle : MonoBehaviour
     public GameObject eventInfoPrefab;
     List<double[]> locations = new List<double[]>();
     List<GameObject> anchors = new List<GameObject>();
-    [SerializeField]private GameObject _ARSessionOrigin;
-    private bool _isLocalizing=true;
+    [SerializeField] private GameObject _ARSessionOrigin;
+    private bool _isLocalizing;
     private float _localizationPassedTime;
     private AREarthManager EarthManager;
-
+    private double _orientationYawAccuracyThreshold;
+    private double _horizontalAccuracyThreshold;
     private float _timeoutSeconds = 180;
-    private const double _orientationYawAccuracyThreshold = 25;
-
-    /// <summary>
-    /// Accuracy threshold for heading degree that can be treated as localization completed.
-    /// </summary>
-   
-
-    /// <summary>
-    /// Accuracy threshold for altitude and longitude that can be treated as localization
-    /// completed.
-    /// </summary>
-    private const double _horizontalAccuracyThreshold = 20;
+    [SerializeField] GameObject currentEventPrefab;
 
     private void Awake()
     {
-        EarthManager = _ARSessionOrigin.GetComponent<AREarthManager>(); 
+        EarthManager = _ARSessionOrigin.GetComponent<AREarthManager>();
     }
     // Start is called before the first frame update
-    async void  Start()
-    {   
-       
+    async void Start()
+    {
+
         var responseString = await client.GetStringAsync("https://maadhav17.pythonanywhere.com/get_events");
         Debug.Log(responseString);
-        
+
         List<Event> events = new List<Event>();
-        foreach ( string item in responseString.Split("|")) { 
-            var eve= JsonUtility.FromJson<Event>(item);
-            events.Add(eve); 
+        foreach (string item in responseString.Split("|"))
+        {
+            var eve = JsonUtility.FromJson<Event>(item);
+            events.Add(eve);
         }
         //Debug.Log(events.eventList);
         //EventInfo eventInfo = new EventInfo(infos, eventInfoPrefab,this.transform,anchor_obj);
 
         int i = 0;
-        
+
         foreach (Event e in events)
         {
 
@@ -91,7 +82,7 @@ public class ScheduleHandle : MonoBehaviour
                 anchors.Add(obj);
                 AnchorController anchorController = obj.GetComponent<AnchorController>();
 
-                
+
                 var latitude = location[0];
                 var longitude = location[1];
                 anchorController.Latitude = latitude;
@@ -99,19 +90,70 @@ public class ScheduleHandle : MonoBehaviour
                 anchorController._ARSessionOrigin = _ARSessionOrigin;
             }
             int ind = locations.FindIndex(elem => elem.SequenceEqual(location));
+            var lower_lim = DateTime.Parse(e.event_date +" " +e.event_time);
+            var upper_lim = DateTime.Parse(e.event_date +" "+ e.event_time_end);
 
-            obj = GameObject.Instantiate(eventInfoPrefab, anchors[ind].transform);
-            obj.transform.localPosition = new Vector3(0,0,0);
+            if ( (DateTime.Now >= lower_lim ) &&(DateTime.Now <  upper_lim )){
+                obj = GameObject.Instantiate(currentEventPrefab, anchors[ind].transform);
+                
+            }
+            else if (DateTime.Now >= upper_lim)
+            {
+                obj = GameObject.Instantiate(eventInfoPrefab, anchors[ind].transform.GetChild(1));
+            }
+            else
+            {
+                continue;
+            }
+            obj.transform.localPosition = new Vector3(0, 0, 0);
             obj.GetComponent<EventController>().setParams(e);
             anchors[ind].GetComponent<AnchorController>().arrange();
 
 
         }
     }
-    
-    
+
+
     private void Update()
     {
+        //Touch for more options
+        if (Input.touchCount > 0)
+        {
+            var touch = Input.GetTouch(0);
+
+
+
+            // Raycast against planes and feature points.
+
+           
+            // Perform the raycast.
+            if (touch.phase == TouchPhase.Began)
+            {
+                Ray ray  = Camera.main.ScreenPointToRay(touch.position);
+                RaycastHit raycastHit;
+                if (Physics.Raycast(ray,out raycastHit))
+                {
+                    // Raycast hits are sorted by distance, so the first one will be the closest hit.
+                    
+                    Debug.Log("HIT");
+                    Debug.Log(raycastHit.transform.name);
+                    
+                    if (raycastHit.transform.name.Equals("More"))
+                    {
+                        var anchorObj = raycastHit.transform.parent;
+                        anchorObj.GetChild(1).gameObject.SetActive(!anchorObj.GetChild(1).gameObject.activeSelf);
+                        if (anchorObj.childCount > 2)
+                        {
+                            anchorObj.GetChild(2).gameObject.SetActive(!anchorObj.GetChild(2).gameObject.activeSelf);
+
+                        }
+                    }
+                    
+                    // Do something with hit.
+                }
+            }
+        }
+
         bool isSessionReady = ARSession.state == ARSessionState.SessionTracking &&
                Input.location.status == LocationServiceStatus.Running;
         var earthTrackingState = EarthManager.EarthTrackingState;
@@ -135,12 +177,12 @@ public class ScheduleHandle : MonoBehaviour
             if (_localizationPassedTime > _timeoutSeconds)
             {
                 Debug.LogError("Geospatial sample localization timed out.");
-                
+
             }
             else
             {
                 _localizationPassedTime += Time.deltaTime;
-                
+
             }
         }
         else if (_isLocalizing)
@@ -153,7 +195,7 @@ public class ScheduleHandle : MonoBehaviour
                 go.SetActive(true);
             }
 
-            
+
         }
 
 
@@ -164,10 +206,7 @@ public class ScheduleHandle : MonoBehaviour
     }
 
 
-  
 
-        
     // Update is called once per frame
 
 }
-

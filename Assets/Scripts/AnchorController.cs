@@ -32,8 +32,9 @@ public class AnchorController : MonoBehaviour
     }
     public void arrange()
     {
-        int index = this.transform.childCount - 1;
-        this.transform.GetChild(index).localPosition = new Vector3 (0,index*1.2f * this.transform.GetChild(index).localScale.y, 0);
+        int index = this.transform.GetChild(1).childCount - 1;
+
+        this.transform.GetChild(1).GetChild(index).localPosition = new Vector3 (0,index*4 * this.transform.GetChild(index).localScale.y, 0);
     }
     // Update is called once per frame
     void Update()
@@ -55,7 +56,7 @@ public class AnchorController : MonoBehaviour
             else
             {
                
-                transform.GetChild(0).gameObject.SetActive(Vector3.Distance(Camera.main.transform.position,transform.position)<=20);
+                transform.GetChild(0).gameObject.SetActive(Vector3.Distance(new Vector3(Camera.main.transform.position.x , 0 , Camera.main.transform.position.z),new Vector3(transform.position.x , 0 , transform.position.z))<=15);
 
             }
             Debug.Log("Tracking State :  " + trackingState.ToString());
